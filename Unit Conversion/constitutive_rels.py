@@ -20,56 +20,73 @@ m_e = 9.1093837015e-31  # kg, electron mass
 
 # System
 
+
 def x_step(laser_wavelength):
-	return laser_wavelength / 20
+    return laser_wavelength / 20
+
 
 def y_step(density):
-	return skin_depth(density) / 4
+    return skin_depth(density) / 4
+
 
 def z_step(density):
-	return skin_depth(density) / 4
+    return skin_depth(density) / 4
 
-def nx(xdims,laser_wavelength):
-	return xdims / x_step(laser_wavelength)
 
-def ny(ydims,density):
-	return ydims / y_step(density)
+def nx(xdims, laser_wavelength):
+    return xdims / x_step(laser_wavelength)
 
-def nz(zdims,density):
-	return zdims / z_step(density)
 
-def time_step(laser_wavelength,density):
-	return 0.99 * (math.sqrt(x_step(laser_wavelength)**2 + y_step(density)**2 + z_step(density)**2) / c)
+def ny(ydims, density):
+    return ydims / y_step(density)
 
-def timesteps_total(sim_length,laser_wavelength,density):
-	return sim_length / time_step(laser_wavelength,density)
 
-def ndump(sim_length,laser_wavelength,density):
-	return timesteps_total(sim_length,laser_wavelength,density) / 100
+def nz(zdims, density):
+    return zdims / z_step(density)
+
+
+def time_step(laser_wavelength, density):
+    return 0.99 * (math.sqrt(x_step(laser_wavelength)**2 +
+                             y_step(density)**2 + z_step(density)**2) / c)
+
+
+def timesteps_total(sim_length, laser_wavelength, density):
+    return sim_length / time_step(laser_wavelength, density)
+
+
+def ndump(sim_length, laser_wavelength, density):
+    return timesteps_total(sim_length, laser_wavelength, density) / 100
 
 # Plasma
 
-def uniform_length(total_length,ramp_lengths):
-	return total_length - sum(ramp_lengths)
+
+def uniform_length(total_length, ramp_lengths):
+    return total_length - sum(ramp_lengths)
+
 
 def plasma_frequency(density):
-	return math.sqrt((density * e * e) / (eps0 * m_e))
+    return math.sqrt((density * e * e) / (eps0 * m_e))
+
 
 def wavelength(density):
-	return 2 * math.pi * c / plasma_frequency(density)
+    return 2 * math.pi * c / plasma_frequency(density)
+
 
 def period(density):
-	return wavelength(density) / c
+    return wavelength(density) / c
+
 
 def skin_depth(density):
-	return c / plasma_frequency(density)
+    return c / plasma_frequency(density)
 
 # Laser
 
+
 def laser_frequency(laser_wavelength):
-	return 2 * math.pi * c / laser_wavelength
+    return 2 * math.pi * c / laser_wavelength
 
 # Witness Beam
 
+
 def num_electons(total_charge):
-	return total_charge / e
+    return total_charge / e
