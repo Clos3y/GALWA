@@ -1,0 +1,46 @@
+#!/bin/bash --login
+
+# PBS job options (name, compute nodes, job time)
+#PBS -N Individual0
+# The following should be 16, 32, 64, 128, 256 or 512
+#PBS -l select=128
+#PBS -l walltime=00:20:00
+#PBS -m abe
+#PBS -M closes@lancaster.ac.uk
+#PBS -l place=scatter
+
+# Replace [budget code] below with your project code (e.g. t01)
+#PBS -A dp152            
+
+# Change to the directory that the job was submitted from
+cd $PBS_O_WORKDIR
+  
+# Load any required modules
+module purge
+module load packages-tesseract
+module load intel-tools-18
+module load hdf5-parallel/1.10.1-intel18
+
+# Set the number of threads to 1
+#   This prevents any threaded system libraries from automatically 
+#   using threading.
+export OMP_NUM_THREADS=1
+
+echo "--------------------------------------------------"
+echo "total nodes: $PBS_NODENUM                         "
+echo "tasks per node: $PBS_TASKNUM                      "
+echo "nodes: $PBS_NODEFILE                              "
+echo "--------------------------------------------------"
+
+# Launch the parallel job
+# Using 6144 MPI processes and 24 MPI processes per node
+# Adapt for your simulation
+date
+start_time="$(date -u +%s.%N)"
+
+mpirun -n 384 -ppn 24 --bind-to core /home/dp152/dp152/dc-clos1/osiris-dev/bin/osiris--2D.e /home/sam/Repos/Genetic_Algorithm_Osiris/Generation0/Invididual0/Individual0.inp > my_stdout.txt 2> my_stderr.txt
+
+end_time="$(date -u +%s.%N)"
+elapsed="$(bc <<<"$end_time-$start_time")"
+echo "Total of $elapsed seconds elapsed for process"
+date

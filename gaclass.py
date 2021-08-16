@@ -1,6 +1,8 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import interpolate
+from scipy.optimize.minpack import curve_fit
 from generationclass import Generation
 import operator
 import copy
@@ -88,38 +90,38 @@ class GeneticAlgorithm:
         """
         # Loops over for the number of generations specified.
         for i in range(self.max_generation_number):
+            os.system(f"mkdir Generation{i}")
             # Create a generation object.
             if i == 0:
                 # For the very first generation, use the populate
                 # method.
                 # Create the smoothing list.
                 self.generation_list.append(Generation(
-                    GenerationNum=self.current_generation))
+                    GenerationNum=i))
                 self.generation_list[i].populate(
                     History=self.individuals_history)
                 self.merit_smoothing = [[]
                                         for i in range(self.max_generation_number)]
             else:
                 # For every other generation, use the repopulate method.
-                self.generation_list.append(Generation(GenerationNum=self.current_generation,
-                                                       MutationRate=self.generation_list[i - 1].mutation_rate))
+                self.generation_list.append(Generation(
+                    GenerationNum=i))
                 self.generation_list[i].repopulate(NewPop=self.generation_list[i - 1].newborn,
                                                    History=self.individuals_history)
 
             # Save and plot the data, output the current status, and
             # perform the mating stage.
             self.data_saver()
-            self.generation_list[i].output_current_status()
+            # self.generation_list[i].output_current_status()
             self.data_plotter()
             self.generation_list[i].mating_stage(
                 History=self.individuals_history)
-            self.current_generation += 1
 
         # Tells the user what the best simulation parameters were.
         self.generation_list[-1].population.sort(
             key=operator.attrgetter('merit'), reverse=False)
-        print("The best simulation parameters achieved were:")
-        print(self.generation_list[i].population[0])
+        # print("The best simulation parameters achieved were:")
+        # print(self.generation_list[i].population[0])
 
         # Save the data into files and show final figure.
         np.save("GAData", self.data, allow_pickle=True)
@@ -194,10 +196,9 @@ class GeneticAlgorithm:
 
         # Populate the y_average list by calculating the average.
         for i in range(len(self.generation_smoothing)):
-            y_average.append(
-                sum(self.merit_smoothing[i]) / len(self.merit_smoothing[i]))
+            y_average.append(np.average(self.merit_smoothing[i]))
         plt.xticks(list(range(0, len(x_axis), 3)))
-        plt.plot(x_axis, self.merit_y_axis, 'o')
+        plt.semilogy(x_axis, self.merit_y_axis, 'o')
 
         # Plot the progression curve.
         if len(x_average) == 1:
@@ -206,9 +207,10 @@ class GeneticAlgorithm:
             f = interpolate.interp1d(x_average, y_average)
             x_fit = np.linspace(0, x_average[-1], int((x_average[-1] + 1) / 2))
             y_fit = f(x_fit)
-            plt.plot(x_fit, y_fit, '-')
+            plt.semilogy(x_fit, y_fit, '-')
 
         plt.xlabel("Generation Number")
         plt.ylabel("Merit")
-        plt.title("Progression of the Merit as Generation Number Increases.")
+        plt.axhline(4.725e-6)
+        plt.title(f"Progression of the Merit as Generation Number Increases. R = {self.generation_list[-1].mutation_rate}")
         plt.savefig("MeritProgression.png")

@@ -1,7 +1,6 @@
 name: Format python code
 on: 
   push:
-    branches: [ master ]
   schedule:
     - cron: '59 23 * * 5'
 jobs:
