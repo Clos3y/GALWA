@@ -2,32 +2,17 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import interpolate
-from scipy.optimize.minpack import curve_fit
 from generationclass import Generation
-import operator
 import copy
-
 
 class GeneticAlgorithm:
     """
-    Class that defines a genetic algorithm object. This class is used
-    to define the initial variables of the algorithm and run it.
+    Class that defines a genetic algorithm object. This class is used to define the initial variables of the algorithm and run it.
 
-    Attributes:
-        MaxGenerationNumber = Stores the maximum number of generations
-                              that we want to iterate through.
-
-    Methods:
-        __init__ = Defines all the initial variables that are needed
-                   to run the genetic algorithm.
-
-        run = Runs the genetic algorithm.
-
-        data_saver = Saves the data into appropriate lists so that
-                     the data can be saved into files.
-
-        data_plotter = Plots the data onto a figure and then saves
-                       the figure.
+    Attributes
+    ----------
+    MaxGenerationNumber : int
+        The maximum number of generations to test. Numbering starts from the zeroeth generation, i.e., 10 generations would be 0-9.
     """
 
     def __init__(self, MaxGenerationNumber):
@@ -35,45 +20,16 @@ class GeneticAlgorithm:
         This method defines the initial variables that are used to
         run the genetic algorithm.
 
-        Variables:
-            self.max_generation_number = Stores the maximum number
-                                         of generations that we want
-                                         to iterate through.
-
-            self.generation_list = Stores all the generations that are
-                                   created into a list.
-
-            self.current_generation = Stores the current generation
-                                      number.
-
-            self.individuals_history = List that stores every 'individual'
-                                       object that is created.
-
-            self.generation_x_axis = Stores the generation numbers in a list
-                                     to be used for plotting.
-                                     Represents the x-axis.
-
-            self.merit_y_axis = Stores the merit values in a list to be used
-                                for plotting. Represents the y-axis.
-
-            self.generation_smoothing = A list that is used to fit s smooth
-                                        curve onto the data so that the
-                                        overall trend can be seen.
-
-            self.merit_smoothing = A list that is used to fit a smooth curve
-                                   onto the data so that the overall trend
-                                   can be seen.
-
-            self.data = A list that stores all the data, which is saved
-                        into a numpy file.
-
-            self.curve_data = Saves the data that is used to create the
-                              curve on the plot.
+        Parameters
+        ----------
+        self.max_generation_number : int, Default = `MaxGenerationNumber`
+            The maximum number of generations to test. Numbering starts from the zeroeth generation, i.e., 10 generations would be 0-9.
         """
-        self.max_generation_number = MaxGenerationNumber
-        self.generation_list = []
-        self.current_generation = 0
-        self.individuals_history = []
+        self.max_generation_number = MaxGenerationNumber # The maximum number of generations to test
+        self.generation_list = [] # A list of all generations that have been created
+        self.current_generation = 0 # An iterator to store the present generation
+        self.individuals_history = [] # A history of all unique individuals
+        # Plotting parameters
         self.generation_x_axis = []
         self.merit_y_axis = []
         self.generation_smoothing = []
@@ -83,10 +39,7 @@ class GeneticAlgorithm:
 
     def run(self):
         """
-        Runs the genetic algorithm by using a for loop.
-        Iterates for the number specified by the maximum generation
-        number variable.
-        Saves the data at the end.
+        Runs the genetic algorithm.
         """
         # Loops over for the number of generations specified.
         for i in range(self.max_generation_number):
@@ -118,8 +71,8 @@ class GeneticAlgorithm:
                 History=self.individuals_history)
 
         # Tells the user what the best simulation parameters were.
-        self.generation_list[-1].population.sort(
-            key=operator.attrgetter('merit'), reverse=False)
+        # self.generation_list[-1].population.sort(
+        #     key=operator.attrgetter('merit'), reverse=False)
         # print("The best simulation parameters achieved were:")
         # print(self.generation_list[i].population[0])
 
@@ -134,16 +87,7 @@ class GeneticAlgorithm:
 
     def data_saver(self):
         """
-        Saves the data from the algorithm into appropriate lists so
-        that the data can then be saved into lists.
-
-        Variables:
-            item_in_data = Stores the data for each generation.
-                           This is then appended to the self.data
-                           list, which means each item in the
-                           self.data list is data about a generation.
-                           Structure of item_in_data:
-                           [generation_num, individual_1, ... , individual_N]
+        Saves the data from the algorithm into appropriate lists so that the data can then be saved into lists.
         """
         item_in_data = []
 
@@ -163,25 +107,7 @@ class GeneticAlgorithm:
 
     def data_plotter(self):
         """
-        Clears the previous figure if it exists. Plots the data onto
-        a new figure and saves it.
-        To work out the progress of the algorithm, the average merit for
-        each generation is calculated and a curve is plotted.
-
-        Variables:
-            x_axis = Stores the x-axis as a numpy array.
-
-            x_average = Stores the x-axis that is used for the progression
-                        curve.
-
-            y_average = Stores the average merit per generation.
-
-            f = Stores the function that is used to plot the progression
-                curve.
-
-            x_fit = Stores the x-coordinates for the progression curve.
-
-            y_fit = Stores the y-coordinates for the progression curve.
+        Plots the merit function vs. generation data onto a new figure and saves it.
         """
         # Try to clear the figure.
         try:
@@ -211,7 +137,6 @@ class GeneticAlgorithm:
 
         plt.xlabel("Generation Number")
         plt.ylabel("Merit")
-        plt.axhline(4.725e-6)
         plt.title(
             f"Progression of the Merit as Generation Number Increases. R = {self.generation_list[-1].mutation_rate}")
         plt.savefig("MeritProgression.png")
