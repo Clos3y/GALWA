@@ -422,7 +422,7 @@ if __name__ == "__main__":
                 "") +
             ",\n")
 
-        file.write('coorindates = "cylindrical",\n')
+        file.write('coordinates = "cylindrical",\n')
 
         file.write("n_cyl_modes = 1,\n")
 

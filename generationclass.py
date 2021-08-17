@@ -200,7 +200,7 @@ class Generation:
             )
             
             os.system(
-                f"python Specific\ Input\ File\ Maker.py -f Generation{self.generation}/Invididual{indiv}/Individual{self.generation*self.num_of_individuals + indiv}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
+                f"python inputfile_maker.py -f Generation{self.generation}/Invididual{indiv}/Individual{self.generation*self.num_of_individuals + indiv}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
             
             os.system(f"cp jobscript.pbs Generation{self.generation}/Invididual{indiv}/jobscript{self.generation*self.num_of_individuals + indiv}.pbs")
 
@@ -239,7 +239,7 @@ class Generation:
             if self.population[i].merit is None:
 
                 os.system(
-                f"python Specific\ Input\ File\ Maker.py -f Generation{self.generation}/Invididual{i}/Individual{self.generation*self.num_of_individuals + i}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
+                f"python inputfile_maker.py -f Generation{self.generation}/Invididual{i}/Individual{self.generation*self.num_of_individuals + i}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
             
                 os.system(f"cp jobscript.pbs Generation{self.generation}/Invididual{i}/jobscript{self.generation*self.num_of_individuals + i}.pbs")
 
@@ -255,7 +255,7 @@ class Generation:
                 continue
             
             os.system(
-                f"python Specific\ Input\ File\ Maker.py -f Generation{self.generation}/Invididual{i}/Individual{self.generation*self.num_of_individuals + i}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
+                f"python inputfile_maker.py -f Generation{self.generation}/Invididual{i}/Individual{self.generation*self.num_of_individuals + i}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
 
             os.system(f"cp jobscript.pbs Generation{self.generation}/Invididual{i}/jobscript{self.generation*self.num_of_individuals + i}.pbs")
 
