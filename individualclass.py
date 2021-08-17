@@ -7,104 +7,41 @@ import time
 
 
 class Individual:
-    """
-    A class that defines an 'Individual' object.
-    The input parameters are the parameters that are being investigated
-    in the genetic algorithm.
-    This class has the ability to change the input file(s) for the
-    simulation, run the simulation, extract the merit value, and restore
-    the input files to their original state, so that they can be used
-    for the next generation.
+    """Defines the individual, meant quite literally as an individual, within a generation.
 
-    Note: ====== !!! This needs to be changed !!! ======
-          The current merit is just the sum of the items in the
-          ParameterList tuple. This was used as dummy data to test
-          if the genetic algorithm was working.
-          See merit_calc function for more details.
-
-    Attributes:
-        *ParameterList = When an instance of this class is
-                         initialised, it can take any number of
-                         arguments, which are all then stored into a
-                         tuple.
-                         Later converted into a list for convenience.
-
-    Methods:
-        __init__ = Initialises an instance of the 'Individual'
-                   object and assigns the variables.
-
-        __str__ = Returns the parameters along with their corresponding
-                  values. Also returns the merit value.
-
-        merit_calc = Calls the methods to change the input file(s), run
-                     the simulation, extract the merit, and restore the
-                     changes made to the input file(s).
-                     Currently the merit is the sum of the parameters,
-                     and needs to be changed.
-                     Check merit_calc method for more details.
-
-        change_file = This method changes the text in the input file(s)
-                      to the desired input parameters.
-
-        run_simulation = This method should run the simulation.
-                         The code needs to be implemented still.
-
-        list_files = Puts the data files into a tuple.
-
-        extract_merit = Extracts the merit value from the input file.
-
-        reverse_change = Restores the input file(s) to the original state
-                         so that they can be used for the next
-                         generation.
+    Attributes
+    ----------
+    ParameterList : list
+        A list of parameters for the individual to possess.
     """
 
     def __init__(self, *ParameterList):
         """
-        Initialises an instance of the 'Individual' class.
-        The class can take any number of arguments, and they are placed
-        into a tuple called ParameterList. This is then turned into a
-        list.
-
         Parameters
         ----------
-        self.parameter_list
-            Takes the argument that is passed from the method and converts the tuple   into a list.
-
-        self.merit
-            Stores the merit value. Set to None as there is no merit calculated when the class in initialised.
+        self.parameter_list : list
+            Takes the argument that is passed from the method and converts the tuple into a list.
         """
         self.parameter_list = list(ParameterList)
+
         self.merit = None
 
     def __str__(self):
-        """
-        Method returns the values of the parameters and the merit value.
-        """
-        # For loop used to cycle through all the parameters.
-        dataList = [
-            f"Parameter {i+1}: {self.parameter_list[i]}" for i in range(len(self.parameter_list))]
+        
+        dataList = [f"Parameter {i+1}: {self.parameter_list[i]}" for i in range(len(self.parameter_list))] # For loop used to cycle through all the parameters.
 
         return str(dataList)
 
     def merit_calc(self, number, inputFile):
-        """
-        Method calculates the merit value used by changing the
-        input file(s) with the desired parameters, running the
-        simulation, extracting the merit value from the data, and
-        restoring the input file(s) so that they can be used for the
-        next generation.
+        """Calculates the merit function for the individual, and assigns it to them.
 
-        The run_simulation and extract_merit methods are commented
-        out as the run_simulation method still needs to be written.
-        The extract_merit method can only be used once the run_simulation
-        method has been implemented.
-        The self.merit variable is currently set by summing all the
-        parameters together, as this was used as dummy data to test how
-        well the algorithm functioned.
+        Parameters
+        ----------
+        number : int
+            Universal identifier for the individual
 
-        Parameters:
-            input_file = Passes in the input file that is used
-                         to run the simulation.
+        inputFile
+            The individual's input file.
         """
 
         self.run_simulation(number, inputFile)
@@ -113,14 +50,17 @@ class Individual:
         self.merit = np.prod(self.parameter_list)
 
     def create_jobscript(self, number, inputFile):
-        """
-        Creates the individual's jobscript file
+        """Creates the individual's jobscript file
 
         Parameters
         ----------
         number : int
             Universal identifier for the individual
+            
+        inputFile
+            The individual's input file.
         """
+
         while not os.path.exists(f"jobscript{number}.pbs"):
             time.sleep(1)
         os.system(
@@ -133,7 +73,11 @@ class Individual:
         Takes the individual, creates the input file, and runs the simulation.
         """
         self.create_jobscript(number, inputFile)
+
         os.system(f"qsub jobscript{number}.pbs")
+
+        while not os.path.exists("MS/Raw/Beam"):
+            time.sleep(1)
 
     def list_files(self, directory):
         """

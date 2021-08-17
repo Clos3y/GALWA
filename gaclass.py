@@ -66,16 +66,9 @@ class GeneticAlgorithm:
             # Save and plot the data, output the current status, and
             # perform the mating stage.
             self.data_saver()
-            # self.generation_list[i].output_current_status()
             self.data_plotter()
             self.generation_list[i].mating_stage(
                 History=self.individuals_history)
-
-        # Tells the user what the best simulation parameters were.
-        # self.generation_list[-1].population.sort(
-        #     key=operator.attrgetter('merit'), reverse=False)
-        # print("The best simulation parameters achieved were:")
-        # print(self.generation_list[i].population[0])
 
         # Save the data into files and show final figure.
         np.save("GAData", self.data, allow_pickle=True)
