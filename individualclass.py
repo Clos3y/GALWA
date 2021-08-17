@@ -27,8 +27,10 @@ class Individual:
         self.merit = None
 
     def __str__(self):
-        
-        dataList = [f"Parameter {i+1}: {self.parameter_list[i]}" for i in range(len(self.parameter_list))] # For loop used to cycle through all the parameters.
+
+        # For loop used to cycle through all the parameters.
+        dataList = [
+            f"Parameter {i+1}: {self.parameter_list[i]}" for i in range(len(self.parameter_list))]
 
         return str(dataList)
 
@@ -56,7 +58,7 @@ class Individual:
         ----------
         number : int
             Universal identifier for the individual
-            
+
         inputFile
             The individual's input file.
         """
