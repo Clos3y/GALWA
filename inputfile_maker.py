@@ -194,7 +194,7 @@ if __name__ == "__main__":
 
     plasma.add_argument(
         "--num_par_x",
-        default=(2,2),
+        default=(2, 2),
         type=tuple,
         help="specifies the number of particles per cell to use in each direction. The total number of particles per cell will be the product of all the components of num_par_x. Default is (2,2).")
 
@@ -235,7 +235,7 @@ if __name__ == "__main__":
 
     beam.add_argument(
         "--num_par_x_beam",
-        default=(2,2),
+        default=(2, 2),
         type=tuple,
         help="specifies the number of particles per cell to use in each direction. The total number of particles per cell will be the product of all the components of num_par_x. Default is 0")
 
@@ -356,7 +356,8 @@ if __name__ == "__main__":
         # spatial grid
         file.write("\ngrid\n{\n")
 
-        delta1 = args.laser_wavelength / (20 * skin_depth(args.plasma_density))  # x
+        delta1 = args.laser_wavelength / \
+            (20 * skin_depth(args.plasma_density))  # x
 
         delta2 = 1 / 4  # y
 
@@ -649,7 +650,8 @@ if __name__ == "__main__":
 
         file.write('profile_type = "gaussian", "gaussian",\n')
 
-        file.write(f"gauss_center(1:{args.dimension}) = {-(80e-15 * c + (2 * np.pi * c)/plasma_frequency(args.plasma_density))/skin_depth(args.plasma_density)}, 0,\n")
+        file.write(
+            f"gauss_center(1:{args.dimension}) = {-(80e-15 * c + (2 * np.pi * c)/plasma_frequency(args.plasma_density))/skin_depth(args.plasma_density)}, 0,\n")
         file.write(
             f"gauss_sigma(1:{args.dimension}) = {args.beam_length / skin_depth(args.plasma_density)}, {args.beam_radius/ skin_depth(args.plasma_density)},\n")
 
@@ -695,14 +697,18 @@ if __name__ == "__main__":
         file.write('propagation = "forward",\n')
 
         file.write("lon_type = 'polynomial',\n")
-        file.write(f"lon_rise = {(40e-15 * c)/skin_depth(args.plasma_density)},\n")
-        file.write(f"lon_fall = {(40e-15 * c)/skin_depth(args.plasma_density)},\n")
-        file.write(f"lon_start = {-1*(80e-15 * c)/skin_depth(args.plasma_density)},\n")
+        file.write(
+            f"lon_rise = {(40e-15 * c)/skin_depth(args.plasma_density)},\n")
+        file.write(
+            f"lon_fall = {(40e-15 * c)/skin_depth(args.plasma_density)},\n")
+        file.write(
+            f"lon_start = {-1*(80e-15 * c)/skin_depth(args.plasma_density)},\n")
         file.write('per_type = "gaussian",\n')
         file.write("per_center = 0.0,\n")
         file.write(
             f"per_w0 = {args.laser_spot_size / skin_depth(args.plasma_density)},\n")
-        file.write(f"per_focus = {-1 * args.focus_position / skin_depth(args.plasma_density)},\n") 
+        file.write(
+            f"per_focus = {-1 * args.focus_position / skin_depth(args.plasma_density)},\n")
 
         file.write("}\n")
 
