@@ -5,6 +5,7 @@ electron beam injected LWFA.
 
 # Usage
 After adjusting the relevant options in `ga_inputs.json` (see below), and then following through in the code, run
+
     $ python main.py
 
 ## Adding/Removing a Parameter
