@@ -8,5 +8,9 @@ After adjusting the relevant options in `ga_inputs.json` (see below), and then f
     $ python main.py
 
 ## Adding/Removing a Parameter
-1. Edit `ga_inputs.json`. Add your parameter name and range. The range should be a list. The system presently supports continuous parameters only.
-2. Edit `populate` and `mutation_stage` methods within `generationclass.py` to use your new parameters.
+Edit `ga_inputs.json`. Add your parameter name and range. The range should be a list. The system presently supports continuous parameters only.
+
+## Headless run
+Comment out all of the `data-plotter` method. You may also wish to then save computation by not saving files either, and so comment out `data-saver`.
+
+Please submit any and all issues found.
