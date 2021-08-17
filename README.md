@@ -1,6 +1,4 @@
-▒█▀▀█ ░█▀▀█ ▒█░░░ ▒█░░▒█ ░█▀▀█ 
-▒█░▄▄ ▒█▄▄█ ▒█░░░ ▒█▒█▒█ ▒█▄▄█ 
-▒█▄▄█ ▒█░▒█ ▒█▄▄█ ▒█▄▀▄█ ▒█░▒█
+![The GALWA logo, or de-facto logo](https://github.com/Clos3y/GALWA/blob/master/logo.png)
 
 Genetic Algorithm used to minimise the energy spread of electrons for an 
 electron beam injected LWFA.
