@@ -5,6 +5,7 @@ from scipy import interpolate
 from generationclass import Generation
 import copy
 
+
 class GeneticAlgorithm:
     """
     Class that defines a genetic algorithm object. This class is used to define the initial variables of the algorithm and run it.
@@ -25,10 +26,10 @@ class GeneticAlgorithm:
         self.max_generation_number : int, Default = `MaxGenerationNumber`
             The maximum number of generations to test. Numbering starts from the zeroeth generation, i.e., 10 generations would be 0-9.
         """
-        self.max_generation_number = MaxGenerationNumber # The maximum number of generations to test
-        self.generation_list = [] # A list of all generations that have been created
-        self.current_generation = 0 # An iterator to store the present generation
-        self.individuals_history = [] # A history of all unique individuals
+        self.max_generation_number = MaxGenerationNumber  # The maximum number of generations to test
+        self.generation_list = []  # A list of all generations that have been created
+        self.current_generation = 0  # An iterator to store the present generation
+        self.individuals_history = []  # A history of all unique individuals
         # Plotting parameters
         self.generation_x_axis = []
         self.merit_y_axis = []

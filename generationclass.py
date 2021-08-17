@@ -1,15 +1,16 @@
 from individualclass import Individual
 from constitutive_relations import *
-import random # For selecting random parameters and mutation
-import operator # To sort individuals
+import random  # For selecting random parameters and mutation
+import operator  # To sort individuals
 import numpy as np
 import json
-import os # To execute command line options
+import os  # To execute command line options
+
 
 class Generation:
     """
     Defines the Generation Class.
-    
+
     The majority of the code is executed by this class.
 
     Attributes
@@ -20,11 +21,12 @@ class Generation:
     # Loads the parameters in from the json
     ga_inputs = json.load(open("ga_inputs.json"))
 
-    # Creates the parameters. This will lead to 'errors' in the code, whereby it won't acknowledge the parameters, but they do exist.
+    # Creates the parameters. This will lead to 'errors' in the code, whereby
+    # it won't acknowledge the parameters, but they do exist.
 
     changeable_parameters = []
 
-    for i,item in enumerate(ga_inputs):
+    for i, item in enumerate(ga_inputs):
         if i <= 2:
             continue
         else:
@@ -74,26 +76,33 @@ class Generation:
         # Use for loop to create all the individuals.
         for indiv in range(self.num_of_individuals):
 
-            os.system(f"mkdir Generation{self.generation}/Invididual{indiv}") # Creates a folder for each individual
-            
-            self.population.append(Individual(*[random.uniform(*i) for i in self.changeable_parameters])) # Creates the initial generation
+            # Creates a folder for each individual
+            os.system(f"mkdir Generation{self.generation}/Invididual{indiv}")
+
+            # Creates the initial generation
+            self.population.append(Individual(
+                *[random.uniform(*i) for i in self.changeable_parameters]))
 
             os.system(
                 f"python inputfile_maker.py -f Generation{self.generation}/Invididual{indiv}/Individual{self.generation*self.num_of_individuals + indiv}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
 
+            # Creates a specific jobscript.
             os.system(
-                f"cp jobscript.pbs Generation{self.generation}/Invididual{indiv}/jobscript{self.generation*self.num_of_individuals + indiv}.pbs") # Creates a specific jobscript.
+                f"cp jobscript.pbs Generation{self.generation}/Invididual{indiv}/jobscript{self.generation*self.num_of_individuals + indiv}.pbs")
 
-            os.chdir(f"Generation{self.generation}/Invididual{indiv}") # Change directory to the specific individual
+            # Change directory to the specific individual
+            os.chdir(f"Generation{self.generation}/Invididual{indiv}")
 
             self.population[-1].merit_calc(self.generation * self.num_of_individuals +
                                            indiv, f"Individual{self.generation*self.num_of_individuals + indiv}.inp")
 
             os.chdir("..")
 
-            os.chdir("..") # Two chdirs are needed to return to root
+            os.chdir("..")  # Two chdirs are needed to return to root
 
-            History.append(self.population[-1]) # Add each individual to the history list. These are guaranteed to be unique, and all but guaranteed not to be the same.
+            # Add each individual to the history list. These are guaranteed to
+            # be unique, and all but guaranteed not to be the same.
+            History.append(self.population[-1])
 
     def repopulate(self, NewPop, History):
         """
@@ -116,7 +125,9 @@ class Generation:
 
             os.system(f"mkdir Generation{self.generation}/Invididual{i}")
 
-            if self.population[i].merit is None: # If the individual does not have a merit value, run a the simulation to determine its value
+            # If the individual does not have a merit value, run a the
+            # simulation to determine its value
+            if self.population[i].merit is None:
 
                 os.system(
                     f"python inputfile_maker.py -f Generation{self.generation}/Invididual{i}/Individual{self.generation*self.num_of_individuals + i}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
@@ -166,24 +177,40 @@ class Generation:
         The method takes the top 50% of performers, and clones them into the next generation. Then, the 'genes' of these individuals (i.e., their Individual attributes) are collected into a pool, randomised, and new individuals are made. During this process, `mutation_stage` is called.
         """
         top50 = []
-        
-        self.parameter_mixing_list = [[] for _ in range(len(self.changeable_parameters))] # Dummy list for mixing parameters. If you can figure out what makes this different from [[] * len(self.changeable_parameters)], please send a commit!
 
-        self.population.sort(key=operator.attrgetter('merit'), reverse=False)# Sorts the population list based on the merit value. Key takes a function. operator.attrgetter = '.' as in self merit. Reverse makes it highest to lowest.
+        # Dummy list for mixing parameters. If you can figure out what makes
+        # this different from [[] * len(self.changeable_parameters)], please
+        # send a commit!
+        self.parameter_mixing_list = [[]
+                                      for _ in range(len(self.changeable_parameters))]
 
-        if self.num_of_individuals % 2 != 0: # if odd
+        # Sorts the population list based on the merit value. Key takes a
+        # function. operator.attrgetter = '.' as in self merit. Reverse makes
+        # it highest to lowest.
+        self.population.sort(key=operator.attrgetter('merit'), reverse=False)
+
+        if self.num_of_individuals % 2 != 0:  # if odd
             raise ValueError("Error! Number of individuals must be even.")
 
-        for i in range(self.num_of_individuals // 2): # Iterates through half of the population list and appends it to the top50 and newborn lists.
-            
-            top50.append(self.population[i]) # Add the top 50% to the gene pool
+        # Iterates through half of the population list and appends it to the
+        # top50 and newborn lists.
+        for i in range(self.num_of_individuals // 2):
 
-            self.newborn.append(self.population[i]) # Clone the top 50% performers
+            # Add the top 50% to the gene pool
+            top50.append(self.population[i])
 
-            for j,param in enumerate(self.parameter_mixing_list): # For each individual in the top50 list, append parameter1 to the first sublist in the mixing list. Append parameter2 to the second sublist in the mixing list, etc.
+            # Clone the top 50% performers
+            self.newborn.append(self.population[i])
+
+            # For each individual in the top50 list, append parameter1 to the
+            # first sublist in the mixing list. Append parameter2 to the second
+            # sublist in the mixing list, etc.
+            for j, param in enumerate(self.parameter_mixing_list):
                 param.append(top50[i].parameter_list[j])
 
-        for i in range(self.num_of_individuals // 2): # Creates the other individuals for the new population, by drawing characteristics from the gene pool, and mutating at random
+        for i in range(
+                self.num_of_individuals //
+                2):  # Creates the other individuals for the new population, by drawing characteristics from the gene pool, and mutating at random
             self.mutation_stage(History)
 
     def mutation_stage(self, History):
@@ -199,9 +226,16 @@ class Generation:
         for j in self.parameter_mixing_list:
             random.shuffle(j)
 
-        new_individual = Individual(*[random.uniform(*val) if np.random.random() <= self.mutation_rate else self.parameter_mixing_list[i].pop() for i,val in enumerate(self.changeable_parameters)]) # Creates the new individual by mutation and breeding
+        new_individual = Individual(
+            *
+            [
+                random.uniform(
+                    *
+                    val) if np.random.random() <= self.mutation_rate else self.parameter_mixing_list[i].pop() for i,
+                val in enumerate(
+                    self.changeable_parameters)])  # Creates the new individual by mutation and breeding
 
-        for j in History: # Iterate over History list to see if the individual has been used before. If it has, reuse the individual.
+        for j in History:  # Iterate over History list to see if the individual has been used before. If it has, reuse the individual.
             if new_individual.parameter_list == j.parameter_list:
                 new_individual = j
                 break
