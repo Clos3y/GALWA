@@ -7,6 +7,7 @@ import json
 import os
 from scipy.constants import e, mu_0 as mu0, epsilon_0 as eps0, m_e
 
+
 def plasma_frequency(plasma_density):
 
     return e * np.sqrt(plasma_density / (m_e * eps0))
@@ -120,7 +121,7 @@ class Generation:
     parameter5 = ga_inputs['electron_beam_length']
 
     parameter6 = ga_inputs['electron_beam_radius']
-    
+
     parameter7 = ga_inputs['focus_position']
 
     def __init__(self, GenerationNum=0):
@@ -198,15 +199,17 @@ class Generation:
                         *Generation.parameter7)),
 
             )
-            
+
             os.system(
                 f"python inputfile_maker.py -f Generation{self.generation}/Invididual{indiv}/Individual{self.generation*self.num_of_individuals + indiv}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
-            
-            os.system(f"cp jobscript.pbs Generation{self.generation}/Invididual{indiv}/jobscript{self.generation*self.num_of_individuals + indiv}.pbs")
+
+            os.system(
+                f"cp jobscript.pbs Generation{self.generation}/Invididual{indiv}/jobscript{self.generation*self.num_of_individuals + indiv}.pbs")
 
             os.chdir(f"Generation{self.generation}/Invididual{indiv}")
 
-            self.population[-1].merit_calc(self.generation*self.num_of_individuals + indiv,f"Individual{self.generation*self.num_of_individuals + indiv}.inp")
+            self.population[-1].merit_calc(self.generation * self.num_of_individuals +
+                                           indiv, f"Individual{self.generation*self.num_of_individuals + indiv}.inp")
 
             os.chdir("..")
             os.chdir("..")
@@ -239,13 +242,16 @@ class Generation:
             if self.population[i].merit is None:
 
                 os.system(
-                f"python inputfile_maker.py -f Generation{self.generation}/Invididual{i}/Individual{self.generation*self.num_of_individuals + i}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
-            
-                os.system(f"cp jobscript.pbs Generation{self.generation}/Invididual{i}/jobscript{self.generation*self.num_of_individuals + i}.pbs")
+                    f"python inputfile_maker.py -f Generation{self.generation}/Invididual{i}/Individual{self.generation*self.num_of_individuals + i}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
+
+                os.system(
+                    f"cp jobscript.pbs Generation{self.generation}/Invididual{i}/jobscript{self.generation*self.num_of_individuals + i}.pbs")
 
                 os.chdir(f"Generation{self.generation}/Invididual{i}")
 
-                self.population[i].merit_calc(self.generation*self.num_of_individuals + i,f"Individual{self.generation*self.num_of_individuals + i}.inp")
+                self.population[i].merit_calc(
+                    self.generation * self.num_of_individuals + i,
+                    f"Individual{self.generation*self.num_of_individuals + i}.inp")
 
                 os.chdir("..")
                 os.chdir("..")
@@ -253,15 +259,17 @@ class Generation:
                 History.append(copy.deepcopy(self.population[i]))
 
                 continue
-            
+
             os.system(
                 f"python inputfile_maker.py -f Generation{self.generation}/Invididual{i}/Individual{self.generation*self.num_of_individuals + i}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} --downramp {self.population[-1].parameter_list[2]} --upramp {self.population[-1].parameter_list[3]} -E 31.3 -L {self.population[-1].parameter_list[4]} -R {self.population[-1].parameter_list[5]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[6]}")
 
-            os.system(f"cp jobscript.pbs Generation{self.generation}/Invididual{i}/jobscript{self.generation*self.num_of_individuals + i}.pbs")
+            os.system(
+                f"cp jobscript.pbs Generation{self.generation}/Invididual{i}/jobscript{self.generation*self.num_of_individuals + i}.pbs")
 
             os.chdir(f"Generation{self.generation}/Invididual{i}")
 
-            self.population[-1].create_jobscript(self.generation*self.num_of_individuals + i,f"Individual{self.generation*self.num_of_individuals + i}.inp")
+            self.population[-1].create_jobscript(self.generation * self.num_of_individuals + i,
+                                                 f"Individual{self.generation*self.num_of_individuals + i}.inp")
 
             os.chdir("..")
             os.chdir("..")
@@ -370,9 +378,9 @@ class Generation:
                     *
                     Generation.parameter6) if np.random.random() <= self.mutation_rate else self.parameter_mixing_list[5].pop(),
             random.uniform(
-            *
-            Generation.parameter7) if np.random.random() <= self.mutation_rate else self.parameter_mixing_list[6].pop())
-        
+                *
+                Generation.parameter7) if np.random.random() <= self.mutation_rate else self.parameter_mixing_list[6].pop())
+
         # Iterate over History list to see if the individual has been
         # used before.
         # If it has, reuse the individual.

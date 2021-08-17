@@ -86,7 +86,7 @@ class Individual:
 
         return str(dataList)
 
-    def merit_calc(self,number,inputFile):
+    def merit_calc(self, number, inputFile):
         """
         Method calculates the merit value used by changing the
         input file(s) with the desired parameters, running the
@@ -107,15 +107,15 @@ class Individual:
                          to run the simulation.
         """
 
-        self.run_simulation(number,inputFile)
-        
+        self.run_simulation(number, inputFile)
+
         # self.extract_merit()
         self.merit = np.prod(self.parameter_list)
 
-    def create_jobscript(self,number,inputFile):
+    def create_jobscript(self, number, inputFile):
         """
         Creates the individual's jobscript file
-        
+
         Parameters
         ----------
         number : int
@@ -123,14 +123,16 @@ class Individual:
         """
         while not os.path.exists(f"jobscript{number}.pbs"):
             time.sleep(1)
-        os.system(f"sed -i 's/-N q3d_no_beam/-N Individual{number}/g' jobscript{number}.pbs")
-        os.system(f"sed -i 's+/work/dp152/dp152/dc-clos1/q3d_no_beam.inp+{os.getcwd()}/{inputFile}+g' jobscript{number}.pbs")
+        os.system(
+            f"sed -i 's/-N q3d_no_beam/-N Individual{number}/g' jobscript{number}.pbs")
+        os.system(
+            f"sed -i 's+/work/dp152/dp152/dc-clos1/q3d_no_beam.inp+{os.getcwd()}/{inputFile}+g' jobscript{number}.pbs")
 
-    def run_simulation(self,number,inputFile):
+    def run_simulation(self, number, inputFile):
         """
         Takes the individual, creates the input file, and runs the simulation.
         """
-        self.create_jobscript(number,inputFile)
+        self.create_jobscript(number, inputFile)
         os.system(f"qsub jobscript{number}.pbs")
 
     def list_files(self, directory):
@@ -143,14 +145,14 @@ class Individual:
         directory : str
             the working directory.
         """
-        
-        s0 = 'RAW-Beam' # String target
-        
-        e0 = '.h5' # File extension
+
+        s0 = 'RAW-Beam'  # String target
+
+        e0 = '.h5'  # File extension
 
         return (f for f in listdir(directory) if (s0 in f and e0 in f))
 
-    def extract_merit(self,inputFile):
+    def extract_merit(self, inputFile):
         """
         Extracts the merit value from the individual's RAW data
         """
@@ -171,14 +173,15 @@ class Individual:
             except BaseException:
                 pass
 
-        hf = h5py.File(myfile, 'r') # Read in the file
-        q = np.abs(hf['q'][:]) # Strip the charge data
-        ene = hf['ene'][:] # Strip the energy data
+        hf = h5py.File(myfile, 'r')  # Read in the file
+        q = np.abs(hf['q'][:])  # Strip the charge data
+        ene = hf['ene'][:]  # Strip the energy data
 
-        qene = q * ene # Calculates the charge-energy product
-        tot_qene = sum(qene) # The total charge energy product
-        tot_charge = sum(q) # The total charge
-        ave = tot_qene / tot_charge # Weighted average
+        qene = q * ene  # Calculates the charge-energy product
+        tot_qene = sum(qene)  # The total charge energy product
+        tot_charge = sum(q)  # The total charge
+        ave = tot_qene / tot_charge  # Weighted average
 
-        standard_deviation = np.sqrt(sum(q * (ene - ave)**2 / tot_charge)) # Weighted error
-        self.merit = standard_deviation / ave # Merit value
+        standard_deviation = np.sqrt(
+            sum(q * (ene - ave)**2 / tot_charge))  # Weighted error
+        self.merit = standard_deviation / ave  # Merit value
