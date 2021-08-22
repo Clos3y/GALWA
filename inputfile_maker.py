@@ -573,7 +573,7 @@ if __name__ == "__main__":
 
         file.write("density = 1.0,\n")
 
-        file.write('profile_type = "math_func",\n')
+        file.write('profile_type = "math func",\n')
 
         def up(x):
             return np.tanh((x - 4 * args.upramp) /
