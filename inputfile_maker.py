@@ -434,7 +434,7 @@ if __name__ == "__main__":
         file.write("\ntime_step\n{\n")
 
         file.write(
-            f"dt = {1 / np.sqrt(2*sum(map(lambda x: 1/(x*x),[delta1,delta2]))) if args.dimension == 2 else 1 / np.sqrt(2*sum(map(lambda x: 1/(x*x),[delta1,delta2,delta3])))}, ! courant condition /sqrt(2) \n")
+            f"dt = {1 / np.sqrt(2*np.sum(map(lambda x: 1/(x*x),[delta1,delta2]))) if args.dimension == 2 else 1 / np.sqrt(2*np.sum(map(lambda x: 1/(x*x),[delta1,delta2,delta3])))}, ! courant condition /sqrt(2) \n")
 
         file.write(f"ndump = {args.ndump},\n")
 

@@ -78,8 +78,8 @@ class Individual:
 
         os.system(f"qsub jobscript{number}.pbs")
 
-        while not os.path.exists("MS/Raw/Beam"):
-            time.sleep(1)
+        # while not os.path.exists("MS/Raw/Beam"):
+        #     time.sleep(1)
 
     def list_files(self, directory):
         """
@@ -124,10 +124,10 @@ class Individual:
         ene = hf['ene'][:]  # Strip the energy data
 
         qene = q * ene  # Calculates the charge-energy product
-        tot_qene = sum(qene)  # The total charge energy product
-        tot_charge = sum(q)  # The total charge
+        tot_qene = np.sum(qene)  # The total charge energy product
+        tot_charge = np.sum(q)  # The total charge
         ave = tot_qene / tot_charge  # Weighted average
 
         standard_deviation = np.sqrt(
-            sum(q * (ene - ave)**2 / tot_charge))  # Weighted error
+            np.sum(q * (ene - ave)**2 / tot_charge))  # Weighted error
         self.merit = standard_deviation / ave  # Merit value
