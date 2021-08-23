@@ -133,7 +133,7 @@ class Generation:
             if self.population[i].merit is None:
 
                 os.system(
-                f"python inputfile_maker.py -f Generation{self.generation}/Invididual{i}/Individual{self.generation*self.num_of_individuals + i}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} -E 31.3 -L {self.population[-1].parameter_list[2]} -R {self.population[-1].parameter_list[3]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[4]}")
+                    f"python inputfile_maker.py -f Generation{self.generation}/Invididual{i}/Individual{self.generation*self.num_of_individuals + i}.inp --cores_per_node 128 -n0 {self.population[-1].parameter_list[0]} -E 31.3 -L {self.population[-1].parameter_list[2]} -R {self.population[-1].parameter_list[3]} -w0 {self.population[-1].parameter_list[1]} --focus_position {self.population[-1].parameter_list[4]}")
 
                 os.system(
                     f"cp jobscript.pbs Generation{self.generation}/Invididual{i}/jobscript{self.generation*self.num_of_individuals + i}.pbs")
@@ -213,10 +213,12 @@ class Generation:
 
         random.shuffle(top50)
 
-        for i in range(self.num_of_individuals // 4):  # Creates the other individuals for the new population, by drawing characteristics from the gene pool, and mutating at random
-            self.mutation_stage(History,top50)
+        for i in range(
+                self.num_of_individuals //
+                4):  # Creates the other individuals for the new population, by drawing characteristics from the gene pool, and mutating at random
+            self.mutation_stage(History, top50)
 
-    def mutation_stage(self, History,top50):
+    def mutation_stage(self, History, top50):
         """Creates new individuals based on a gene pool of prior individuals, and mutates occassional parameters.
 
         Parameters
@@ -224,7 +226,7 @@ class Generation:
         History : list
             A list containing all unique individuals.
         """
-        
+
         parent1 = top50.pop()
         parent2 = top50.pop()
 
@@ -238,7 +240,7 @@ class Generation:
 
         for i in range(len(self.changeable_parameters)):
             random.shuffle(genes[i])
-        
+
         for i in range(4):
             new_individual = Individual(
                 *
