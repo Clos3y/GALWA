@@ -98,7 +98,7 @@ if __name__ == "__main__":
         "--boundaries",
         nargs=2,
         help="specify the lower and upper boundaries of the global simulation space at the beggining of the simulation in [m]. Default is 0.",
-        default=[(-3e-3, 0), (0, 50e-6)])
+        default=[(571.5e-6, 0), (0, 108.2e-6)])
 
     space.add_argument(
         "--if_move",
@@ -206,13 +206,13 @@ if __name__ == "__main__":
 
     plasma.add_argument(
         "--upramp",
-        default=1.5e-3,
+        default=1.5e-3/4,
         type=float,
         help="the length of the upramp to maximum plasma density, in [m]")
 
     plasma.add_argument(
         "--downramp",
-        default=1.5e-3,
+        default=1.5e-3/4,
         type=float,
         help="the length of the downramp to minimum plasma density, in [m]")
 
@@ -434,7 +434,7 @@ if __name__ == "__main__":
         file.write("\ntime_step\n{\n")
 
         file.write(
-            f"dt = {1 / np.sqrt(2*np.sum(map(lambda x: 1/(x*x),[delta1,delta2]))) if args.dimension == 2 else 1 / np.sqrt(2*np.sum(map(lambda x: 1/(x*x),[delta1,delta2,delta3])))}, ! courant condition /sqrt(2) \n")
+            f"dt = {1 / np.sqrt(2*sum(map(lambda x: 1/(x*x),[delta1,delta2]))) if args.dimension == 2 else 1 / np.sqrt(2*sum(map(lambda x: 1/(x*x),[delta1,delta2,delta3])))}, ! courant condition /sqrt(2) \n")
 
         file.write(f"ndump = {args.ndump},\n")
 
