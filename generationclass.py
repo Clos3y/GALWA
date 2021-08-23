@@ -185,6 +185,7 @@ class Generation:
         -----
         The method takes the top 50% of performers, and clones them into the next generation. Then, the 'genes' of these individuals (i.e., their Individual attributes) are collected into a pool, randomised, and new individuals are made. During this process, `mutation_stage` is called.
         """
+
         top50 = []
 
         # Dummy list for mixing parameters. If you can figure out what makes
@@ -200,6 +201,8 @@ class Generation:
 
         if self.num_of_individuals % 2 != 0:  # if odd
             raise ValueError("Error! Number of individuals must be even.")
+        if self.num_of_individuals % 4 != 0:  # if odd
+            raise ValueError("Error! Need parents!")
 
         # Iterates through half of the population list and appends it to the
         # top50 and newborn lists.
@@ -208,21 +211,12 @@ class Generation:
             # Add the top 50% to the gene pool
             top50.append(self.population[i])
 
-            # Clone the top 50% performers
-            self.newborn.append(self.population[i])
+        random.shuffle(top50)
 
-            # For each individual in the top50 list, append parameter1 to the
-            # first sublist in the mixing list. Append parameter2 to the second
-            # sublist in the mixing list, etc.
-            for j, param in enumerate(self.parameter_mixing_list):
-                param.append(top50[i].parameter_list[j])
+        for i in range(self.num_of_individuals // 4):  # Creates the other individuals for the new population, by drawing characteristics from the gene pool, and mutating at random
+            self.mutation_stage(History,top50)
 
-        for i in range(
-                self.num_of_individuals //
-                2):  # Creates the other individuals for the new population, by drawing characteristics from the gene pool, and mutating at random
-            self.mutation_stage(History)
-
-    def mutation_stage(self, History):
+    def mutation_stage(self, History,top50):
         """Creates new individuals based on a gene pool of prior individuals, and mutates occassional parameters.
 
         Parameters
@@ -230,23 +224,34 @@ class Generation:
         History : list
             A list containing all unique individuals.
         """
+        
+        parent1 = top50.pop()
+        parent2 = top50.pop()
 
-        # Shuffle each sublist in the mixing list.
-        for j in self.parameter_mixing_list:
-            random.shuffle(j)
+        genes = self.parameter_mixing_list
 
-        new_individual = Individual(
-            *
-            [
-                random.uniform(
-                    *
-                    val) if np.random.random() <= self.mutation_rate else self.parameter_mixing_list[i].pop() for i,
-                val in enumerate(
-                    self.changeable_parameters)])  # Creates the new individual by mutation and breeding
+        for i in range(len(self.changeable_parameters)):
+            genes[i].append(parent1.parameter_list[i])
+            genes[i].append(parent2.parameter_list[i])
+            genes[i].append(parent1.parameter_list[i])
+            genes[i].append(parent2.parameter_list[i])
 
-        for j in History:  # Iterate over History list to see if the individual has been used before. If it has, reuse the individual.
-            if new_individual.parameter_list == j.parameter_list:
-                new_individual = j
-                break
+        for i in range(len(self.changeable_parameters)):
+            random.shuffle(genes[i])
+        
+        for i in range(4):
+            new_individual = Individual(
+                *
+                [
+                    random.uniform(
+                        *
+                        val) if np.random.random() <= self.mutation_rate else self.parameter_mixing_list[i].pop() for i,
+                    val in enumerate(
+                        self.changeable_parameters)])  # Creates the new individual by mutation and breeding
 
-        self.newborn.append(new_individual)
+            for j in History:  # Iterate over History list to see if the individual has been used before. If it has, reuse the individual.
+                if new_individual.parameter_list == j.parameter_list:
+                    new_individual = j
+                    break
+
+            self.newborn.append(new_individual)
