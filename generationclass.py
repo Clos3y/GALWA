@@ -93,11 +93,11 @@ class Generation:
             # Change directory to the specific individual
             os.chdir(f"Generation{self.generation}/Invididual{indiv}")
 
-            with open(f"Individual{indiv}.data", "x") as f:
-                f.write(self.population[indiv].__str__())
-
             self.population[-1].merit_calc(self.generation * self.num_of_individuals +
                                            indiv, f"Individual{self.generation*self.num_of_individuals + indiv}.inp")
+
+            with open(f"Individual{indiv}.data", "x") as f:
+                f.write(self.population[indiv].__str__())
 
             os.chdir("..")
 
@@ -140,12 +140,13 @@ class Generation:
 
                 os.chdir(f"Generation{self.generation}/Invididual{i}")
 
-                with open(f"Individual{i}.data", "x") as f:
-                    f.write(self.population[i].__str__())
-
                 self.population[i].merit_calc(
                     self.generation * self.num_of_individuals + i,
                     f"Individual{self.generation*self.num_of_individuals + i}.inp")
+
+                with open(f"Individual{i}.data", "x") as f:
+                    f.write(self.population[i].__str__())
+
 
                 os.chdir("..")
 
@@ -205,22 +206,19 @@ class Generation:
         # top50 and newborn lists.
         for i in range(self.num_of_individuals // 2):
 
-            # Add the top 50% to the gene pool
-            top50.append(self.population[i])
-
-            # Clone the top 50% performers
+            # Clone the top 50% performers twice
+            self.newborn.append(self.population[i])
             self.newborn.append(self.population[i])
 
-            # For each individual in the top50 list, append parameter1 to the
-            # first sublist in the mixing list. Append parameter2 to the second
-            # sublist in the mixing list, etc.
-            for j, param in enumerate(self.parameter_mixing_list):
-                param.append(top50[i].parameter_list[j])
-
-        for i in range(
-                self.num_of_individuals //
-                2):  # Creates the other individuals for the new population, by drawing characteristics from the gene pool, and mutating at random
-            self.mutation_stage(History)
+        for i,indiv in enumerate(self.newborn):
+            self.newborn[i] = Individual(
+            *
+            [
+                random.uniform(
+                    *
+                    val) if np.random.random() <= self.mutation_rate else indiv.parameter_list[j] for j,
+                val in enumerate(
+                    self.changeable_parameters)]) 
 
     def mutation_stage(self, History):
         """Creates new individuals based on a gene pool of prior individuals, and mutates occassional parameters.

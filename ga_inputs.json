@@ -1,7 +1,7 @@
 {
     "max_generation_number" : 10, 
     "num_of_individuals" : 100, 
-    "mutation_rate": 0.001,
+    "mutation_rate": 0.1,
     "plasma_density" : [2e23,6e23], 
     "laser_spot_size" : [4e-6,4e-5],
     "electron_beam_length" : [4e-7,4e-6],

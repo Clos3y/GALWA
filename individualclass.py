@@ -31,6 +31,7 @@ class Individual:
         # For loop used to cycle through all the parameters.
         dataList = [
             f"Parameter {i+1}: {self.parameter_list[i]}" for i in range(len(self.parameter_list))]
+        dataList.append(self.merit)
 
         return str(dataList)
 
