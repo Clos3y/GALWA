@@ -131,6 +131,7 @@ class GeneticAlgorithm:
 
         plt.xlabel("Generation Number")
         plt.ylabel("Merit")
+        plt.axhline(y=3360)
         plt.title(
             f"Progression of the Merit as Generation Number Increases. R = {self.generation_list[-1].mutation_rate}")
         plt.savefig("MeritProgression.png")

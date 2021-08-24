@@ -206,13 +206,13 @@ if __name__ == "__main__":
 
     plasma.add_argument(
         "--upramp",
-        default=1.5e-3/4,
+        default=1.5e-3 / 4,
         type=float,
         help="the length of the upramp to maximum plasma density, in [m]")
 
     plasma.add_argument(
         "--downramp",
-        default=1.5e-3/4,
+        default=1.5e-3 / 4,
         type=float,
         help="the length of the downramp to minimum plasma density, in [m]")
 
