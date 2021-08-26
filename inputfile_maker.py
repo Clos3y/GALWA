@@ -79,8 +79,8 @@ if __name__ == "__main__":
         type=tuple,
         help="specifies the number of nodes to use in each direction for the simulation. The total number of nodes will be the product of the number of nodes for each direction. Default is 1.",
         default=(
-            96,
-            4))
+            512,
+            6))
 
     node_conf.add_argument(
         "--if_periodic",
@@ -139,7 +139,7 @@ if __name__ == "__main__":
         "--time",
         default=[
             0,
-            3.4e-11],
+            5.4e-12],
         type=list,
         help="specify the initial and final time of the simulation in [s]. Default is (0,9.7e-17).")
 
@@ -206,19 +206,19 @@ if __name__ == "__main__":
 
     plasma.add_argument(
         "--upramp",
-        default=2.4e-3/8,
+        default=2.4e-4/8,
         type=float,
         help="the length of the upramp to maximum plasma density, in [m]")
 
     plasma.add_argument(
         "--downramp",
-        default=2.4e-3/4,
+        default=2.4e-4/8,
         type=float,
         help="the length of the downramp to minimum plasma density, in [m]")
 
     plasma.add_argument(
         "--plasma_length",
-        default=6e-3,
+        default=6e-4,
         type=float,
         help="The length of the plasma in [m]")
 
@@ -257,7 +257,7 @@ if __name__ == "__main__":
         "-L",
         "--beam_length",
         type=float,
-        default=4*13e-15 * c,
+        default=13e-15 * c,
         help="the length of the electron beam"
     )
 
@@ -367,7 +367,7 @@ if __name__ == "__main__":
         # tuples (e.g. 0,0,0 1,2,3), and take their difference into a list or
         # tuple. Please submit a commit if you can fix this to be shorter.
 
-        boundaries = [[]] * args.dimension
+        boundaries = [[] for _ in range(args.dimension)]
 
         for count, item in enumerate(args.boundaries):
 
@@ -400,6 +400,9 @@ if __name__ == "__main__":
 
             ) / args.cores_per_node
         ) * args.cores_per_node)
+
+        ny = int(nx * args.node_number[1] / args.node_number[0]) # load balancing
+
         try:  # skips nz if it's only 2D
             nz = int(np.ceil(
 
@@ -607,7 +610,7 @@ if __name__ == "__main__":
 
         file.write("}\n")
 
-        # beam electrons, real s**t
+        # beam electrons
 
         file.write("\nspecies\n{\n")
 
@@ -634,10 +637,10 @@ if __name__ == "__main__":
         file.write("use_classical_uadd = .true.,\n")
 
         file.write(
-            f"uth(1:3) ={args.beam_energy_spread * e * 1e6 / (m_e * c * c)}, {args.beam_energy_spread * e * 1e6 / (m_e * c * c)}, {args.beam_energy_spread * e * 1e6 / (m_e * c * c)},\n")
+            f"uth(1:3) ={args.beam_energy_spread * e * 1e6 / (m_e * c * c)}, 0,0,\n")
 
         file.write(
-            f"ufl(1:3) = {args.beam_energy * e * 1e6 / (m_e * c * c)},{args.beam_energy_spread * e * 1e6 / (m_e * c * c)}, {args.beam_energy_spread * e * 1e6 / (m_e * c * c)},\n")
+            f"ufl(1:3) = {args.beam_energy * e * 1e6 / (m_e * c * c)},0,0,\n")
             
         file.write("}\n")
 
@@ -671,12 +674,9 @@ if __name__ == "__main__":
         file.write('ndump_fac_ene = 1,\n')
         file.write('ndump_fac_lineout = 1,\n')
         file.write('ndump_fac_pha = 1,\n')
-
-        #file.write('n_ave(1:2) = 128, 1,\n')
-
         file.write('reports = "charge",\n')
 
-        file.write('ndump_fac_raw = 10,\n')
+        file.write(f'ndump_fac_raw = {np.ceil(args.time[1]*plasma_frequency(args.plasma_density)/((1 / np.sqrt(2*sum(map(lambda x: 1/(x*x),[delta1,delta2]))) if args.dimension == 2 else 1 / np.sqrt(2*sum(map(lambda x: 1/(x*x),[delta1,delta2,delta3]))))*args.ndump*10))}, ! adjusted such that there will always be about ten raw files \n')
         file.write('raw_fraction = 1,\n')
         file.write("}\n")
 
@@ -684,13 +684,11 @@ if __name__ == "__main__":
 
         file.write("\nzpulse\n{\n")
 
-        #file.write(
-        #    f"a0 = { (e/(np.pi * m_e * np.sqrt(2*eps0 * c ** 5 ))) *  np.sqrt(args.intensity * 1e4) * args.laser_wavelength},\n")
         file.write(
-            f"a0 = 1.35,\n")
+           f"a0 = { (e/(np.pi * m_e * np.sqrt(2*eps0 * c ** 5 ))) *  np.sqrt(args.intensity * 1e4) * args.laser_wavelength},\n")
 
         file.write(
-            f"omega0 = {2 * np.pi * c * np.sqrt(eps0 * m_e / args.plasma_density) / (args.laser_wavelength * e)},\n")
+            f"omega0 = {2 * np.pi * c / (args.laser_wavelength * plasma_frequency(args.plasma_density))},\n")
 
         file.write("pol = 0.0,\n")
 
@@ -703,8 +701,6 @@ if __name__ == "__main__":
             f"lon_rise = {(40e-15 * c)/skin_depth(args.plasma_density)},\n")
         file.write(
             f"lon_fall = {(40e-15 * c)/skin_depth(args.plasma_density)},\n")
-        #file.write(
-        #    f"lon_start = {-1*(1.3e-6)/skin_depth(args.plasma_density)},\n")
         file.write(
             f"lon_start = 0,\n")
     
@@ -716,9 +712,3 @@ if __name__ == "__main__":
             f"per_focus = {-1 * args.focus_position / skin_depth(args.plasma_density)},\n")
 
         file.write("}\n")
-
-        # file.write("\nsmooth\n{\n")
-
-        # file.write(f"type(1:{args.dimension}) = {args.current_smooth_type},\n")
-
-        # file.write("}\n")

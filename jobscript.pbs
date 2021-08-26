@@ -4,9 +4,9 @@
 #PBS -N q3d_no_beam
 # The following should be 16, 32, 64, 128, 256 or 512
 #PBS -l select=128
-#PBS -l walltime=00:20:00
+#PBS -l walltime=01:00:00
 #PBS -m abe
-#PBS -M closes@lancaster.ac.uk
+#PBS -M s.close@lancaster.ac.uk
 #PBS -l place=scatter
 
 # Replace [budget code] below with your project code (e.g. t01)
@@ -38,7 +38,9 @@ echo "--------------------------------------------------"
 date
 start_time="$(date -u +%s.%N)"
 
-mpirun -n 384 -ppn 24 --bind-to core /home/dp152/dp152/dc-clos1/osiris-dev/bin/osiris--2D.e /work/dp152/dp152/dc-clos1/q3d_no_beam.inp > my_stdout.txt 2> my_stderr.txt
+mpirun -n 3072 -ppn 24 --bind-to core /home/dp152/dp152/dc-clos1/osiris-dev/bin/osiris--2D.e /work/dp152/dp152/dc-clos1/q3d_no_beam.inp > my_stdout.txt 2> my_stderr.txt
+
+touch completionTest
 
 end_time="$(date -u +%s.%N)"
 elapsed="$(bc <<<"$end_time-$start_time")"

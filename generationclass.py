@@ -93,7 +93,7 @@ class Generation:
             # Change directory to the specific individual
             os.chdir(f"Generation{self.generation}/Invididual{indiv}")
 
-            with open(f"Individual{indiv}.data", "x") as f:
+            with open(f"Individual{self.generation*self.num_of_individuals + indiv}.data", "x") as f:
                 f.write(self.population[indiv].__str__())
 
             self.population[-1].merit_calc(self.generation * self.num_of_individuals +
@@ -140,7 +140,7 @@ class Generation:
 
                 os.chdir(f"Generation{self.generation}/Invididual{i}")
 
-                with open(f"Individual{i}.data", "x") as f:
+                with open(f"Individual{self.generation*self.num_of_individuals + i}.data", "x") as f:
                     f.write(self.population[i].__str__())
 
                 self.population[i].merit_calc(
@@ -163,7 +163,7 @@ class Generation:
 
             os.chdir(f"Generation{self.generation}/Invididual{i}")
 
-            with open(f"Individual{i}.data", "x") as f:
+            with open(f"Individual{self.generation*self.num_of_individuals + i}.data", "x") as f:
                 f.write(self.population[i].__str__())
 
             self.population[-1].create_jobscript(self.generation * self.num_of_individuals + i,
