@@ -206,13 +206,13 @@ if __name__ == "__main__":
 
     plasma.add_argument(
         "--upramp",
-        default=2.4e-4/8,
+        default=2.4e-4 / 8,
         type=float,
         help="the length of the upramp to maximum plasma density, in [m]")
 
     plasma.add_argument(
         "--downramp",
-        default=2.4e-4/8,
+        default=2.4e-4 / 8,
         type=float,
         help="the length of the downramp to minimum plasma density, in [m]")
 
@@ -401,7 +401,10 @@ if __name__ == "__main__":
             ) / args.cores_per_node
         ) * args.cores_per_node)
 
-        ny = int(nx * args.node_number[1] / args.node_number[0]) # load balancing
+        ny = int(
+            nx *
+            args.node_number[1] /
+            args.node_number[0])  # load balancing
 
         try:  # skips nz if it's only 2D
             nz = int(np.ceil(
@@ -641,7 +644,7 @@ if __name__ == "__main__":
 
         file.write(
             f"ufl(1:3) = {args.beam_energy * e * 1e6 / (m_e * c * c)},0,0,\n")
-            
+
         file.write("}\n")
 
         file.write("\nprofile\n{\n")
@@ -685,7 +688,7 @@ if __name__ == "__main__":
         file.write("\nzpulse\n{\n")
 
         file.write(
-           f"a0 = { (e/(np.pi * m_e * np.sqrt(2*eps0 * c ** 5 ))) *  np.sqrt(args.intensity * 1e4) * args.laser_wavelength},\n")
+            f"a0 = { (e/(np.pi * m_e * np.sqrt(2*eps0 * c ** 5 ))) *  np.sqrt(args.intensity * 1e4) * args.laser_wavelength},\n")
 
         file.write(
             f"omega0 = {2 * np.pi * c / (args.laser_wavelength * plasma_frequency(args.plasma_density))},\n")
@@ -703,7 +706,7 @@ if __name__ == "__main__":
             f"lon_fall = {(40e-15 * c)/skin_depth(args.plasma_density)},\n")
         file.write(
             f"lon_start = 0,\n")
-    
+
         file.write('per_type = "gaussian",\n')
         file.write("per_center = 0.0,\n")
         file.write(
