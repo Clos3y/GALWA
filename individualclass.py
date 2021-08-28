@@ -49,7 +49,7 @@ class Individual:
         self.run_simulation(number, inputFile)
 
         # self.extract_merit()
-        self.merit = np.prod(self.parameter_list)
+        self.merit = self.extract_merit(number)
 
     def create_jobscript(self, number, inputFile):
         """Creates the individual's jobscript file
@@ -69,6 +69,8 @@ class Individual:
             f"sed -i 's/-N q3d_no_beam/-N Individual{number}/g' jobscript{number}.pbs")
         os.system(
             f"sed -i 's+/work/dp152/dp152/dc-clos1/q3d_no_beam.inp+{os.getcwd()}/{inputFile}+g' jobscript{number}.pbs")
+        os.system(
+            f"sed -i 's+completionTest+{os.getcwd()}/completionTest+g' jobscript{number}.pbs")
 
     def run_simulation(self, number, inputFile):
         """
@@ -78,8 +80,10 @@ class Individual:
 
         os.system(f"qsub jobscript{number}.pbs")
 
-        # while not os.path.exists("MS/Raw/Beam"):
-        #     time.sleep(1)
+        while not os.path.exists("completionTest"):
+            time.sleep(1)
+
+        os.system("rm completionTest")
 
     def list_files(self, directory):
         """
@@ -98,7 +102,7 @@ class Individual:
 
         return (f for f in listdir(directory) if (s0 in f and e0 in f))
 
-    def extract_merit(self, inputFile):
+    def extract_merit(self, number):
         """
         Extracts the merit value from the individual's RAW data
         """
@@ -131,3 +135,7 @@ class Individual:
         standard_deviation = np.sqrt(
             np.sum(q * (ene - ave)**2 / tot_charge))  # Weighted error
         self.merit = standard_deviation / ave  # Merit value
+
+        os.system(f"echo 'Average: {ave}' >> Individual{number}.data")
+        os.system(
+            f"echo 'Std Dev: {standard_deviation}' >> Individual{number}.data")
