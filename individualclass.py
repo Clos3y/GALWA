@@ -137,4 +137,5 @@ class Individual:
         self.merit = standard_deviation / ave  # Merit value
 
         os.system(f"echo 'Average: {ave}' >> Individual{number}.data")
-        os.system(f"echo 'Std Dev: {standard_deviation}' >> Individual{number}.data")
+        os.system(
+            f"echo 'Std Dev: {standard_deviation}' >> Individual{number}.data")
