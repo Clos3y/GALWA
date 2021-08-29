@@ -1,10 +1,18 @@
 {
-    "max_generation_number" : 10, 
-    "num_of_individuals" : 100, 
-    "mutation_rate": 0.001,
-    "plasma_density" : [2e23,6e23], 
-    "laser_spot_size" : [4e-6,4e-5],
-    "electron_beam_length" : [4e-7,4e-6],
-    "electron_beam_radius": [3e-6,30e-6],
-    "focus_position": [3.5e-3,5.5e-3]
+    "genetic_algorithm": {
+        "max_generation_number" : 10, 
+        "num_of_individuals" : 100,
+        "selection_fraction": 0.5
+    },
+
+    "mutation_parameters":{
+        "mutation_rate": 0.01,
+        "method": "perturbative"
+    },
+
+    "variable_parameters": {
+        "plasma_density" : [2e23,6e23], 
+        "laser_spot_size" : [4e-6,4e-5],
+        "electron_beam_radius": [3e-6,30e-6]
+    }
 }

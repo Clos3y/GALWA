@@ -2,17 +2,7 @@ from scipy import optimize
 from scipy.constants import e, c, mu_0 as mu0, epsilon_0 as eps0, m_e
 import argparse
 import numpy as np
-
-
-def plasma_frequency(plasma_density):
-
-    return e * np.sqrt(plasma_density / (m_e * eps0))
-
-
-def skin_depth(plasma_density):
-
-    return np.sqrt(m_e / (plasma_density * mu0)) / e
-
+from constitutive_relations import *
 
 if __name__ == "__main__":
 
