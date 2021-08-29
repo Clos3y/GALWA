@@ -48,9 +48,7 @@ class Individual:
 
         self.run_simulation(number, inputFile)
 
-        # self.merit = self.extract_merit(number)
-
-        self.merit = np.prod(self.parameter_list)
+        self.merit = self.extract_merit(number)
 
     def create_jobscript(self, number, inputFile):
         """Creates the individual's jobscript file
@@ -81,10 +79,10 @@ class Individual:
 
         os.system(f"qsub jobscript{number}.pbs")
 
-        # while not os.path.exists("completionTest"):
-        #     time.sleep(1)
+        while not os.path.exists("completionTest"):
+            time.sleep(1)
 
-        # os.system("rm completionTest")
+        os.system("rm completionTest")
 
     def list_files(self, directory):
         """
