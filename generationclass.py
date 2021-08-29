@@ -6,6 +6,7 @@ import numpy as np
 import json
 import os  # To execute command line options
 
+
 class Generation:
     """
     Defines the Generation Class.
@@ -195,7 +196,8 @@ class Generation:
         # it highest to lowest.
         self.population.sort(key=operator.attrgetter('merit'), reverse=False)
 
-        if self.num_of_individuals % int(2/(self.selection_fraction)) != 0:  # if odd
+        if self.num_of_individuals % int(
+                2 / (self.selection_fraction)) != 0:  # if odd
             raise ValueError("Error! Need parents!")
 
         # Iterates through half of the population list and appends it to the
@@ -207,7 +209,10 @@ class Generation:
 
         random.shuffle(top50)
 
-        for i in range(int(self.num_of_individuals * self.selection_fraction)//2):  # Creates the other individuals for the new population, by drawing characteristics from the gene pool, and mutating at random
+        # Creates the other individuals for the new population, by drawing
+        # characteristics from the gene pool, and mutating at random
+        for i in range(int(self.num_of_individuals *
+                           self.selection_fraction) // 2):
             self.mutation_stage(History, top50)
 
     def mutation_stage(self, History, top50):
@@ -234,9 +239,18 @@ class Generation:
 
         for i in range(int(2 / self.selection_fraction)):
             if self.mutation_method == "perturbative":
-                geneList = [self.parameter_mixing_list[i].pop() * random.gauss(1,1/3) if np.random.random() <= self.mutation_rate else self.parameter_mixing_list[i].pop() for i in range(len(self.changeable_parameters))]
-                geneList = [self.changeable_parameters[i][0] if geneList[i] < self.changeable_parameters[i][0] else geneList[i] for i in range(len(self.changeable_parameters))]
-                geneList = [self.changeable_parameters[i][1] if geneList[i] > self.changeable_parameters[i][1] else geneList[i] for i in range(len(self.changeable_parameters))]
+                geneList = [
+                    self.parameter_mixing_list[i].pop() *
+                    random.gauss(
+                        1,
+                        1 /
+                        3) if np.random.random() <= self.mutation_rate else self.parameter_mixing_list[i].pop() for i in range(
+                        len(
+                            self.changeable_parameters))]
+                geneList = [self.changeable_parameters[i][0] if geneList[i] < self.changeable_parameters[i]
+                            [0] else geneList[i] for i in range(len(self.changeable_parameters))]
+                geneList = [self.changeable_parameters[i][1] if geneList[i] > self.changeable_parameters[i]
+                            [1] else geneList[i] for i in range(len(self.changeable_parameters))]
                 new_individual = Individual(*geneList)
             elif self.mutation_method == "jumping":
                 new_individual = Individual(
