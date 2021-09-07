@@ -69,8 +69,8 @@ if __name__ == "__main__":
         type=tuple,
         help="specifies the number of nodes to use in each direction for the simulation. The total number of nodes will be the product of the number of nodes for each direction. Default is 1.",
         default=(
-            512,
-            6))
+            6,
+            512))
 
     node_conf.add_argument(
         "--if_periodic",
@@ -88,7 +88,7 @@ if __name__ == "__main__":
         "--boundaries",
         nargs=2,
         help="specify the lower and upper boundaries of the global simulation space at the beggining of the simulation in [m]. Default is 0.",
-        default=[(-571.5e-6, 0), (0, 108.2e-6)])
+        default=[(0,-571.5e-6), (108.2e-6,0)])
 
     space.add_argument(
         "--if_move",
@@ -590,7 +590,7 @@ if __name__ == "__main__":
         num = optimize.minimize_scalar(doubleSig)
 
         file.write(
-            f'math_func_expr = "if(x1 < 0.0, 0.0, if(x1 <= {(args.plasma_length + 4*(args.downramp + args.upramp))/ skin_depth(args.plasma_density)}, (1 + tanh((x1 - {4*args.upramp / skin_depth(args.plasma_density)}) / {args.upramp / skin_depth(args.plasma_density)})) * (1 + tanh( ({(4*(2*args.upramp - args.downramp) + args.plasma_length) / skin_depth(args.plasma_density)} - x1) / {args.downramp / skin_depth(args.plasma_density)} ) / ({4 * doubleSig(num.x,sign=1)})),0.0))",\n')
+            f'math_func_expr = "if(x1 < 0.0, 0.0, if(x1 <= {(args.plasma_length + 4*(args.downramp + args.upramp))/ skin_depth(args.plasma_density)}, (1 + tanh((x1 - {4*args.upramp / skin_depth(args.plasma_density)}) / {args.upramp / skin_depth(args.plasma_density)})) * (1 + tanh( ({(4*(2*args.upramp - args.downramp) + args.plasma_length) / skin_depth(args.plasma_density)} - x1) / {args.downramp / skin_depth(args.plasma_density)} )) / ({4 * doubleSig(num.x,sign=1)}),0.0))",\n')
 
         # file.write(f'math_func_expr = "if(x1 < 0.0, 0.0, if(x1 <= {args.plasma_length / 2}, 0.5*(tanh((x1-{4*args.upramp})/{args.upramp})+1),if(x1 <= {args.plasma_length}, -0.5*(tanh((x1- {4*(args.downramp - args.upramp)-args.plasma_length})/{args.downramp})-1), 0.0)))",\n')
 
