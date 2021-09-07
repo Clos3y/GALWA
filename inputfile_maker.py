@@ -88,7 +88,7 @@ if __name__ == "__main__":
         "--boundaries",
         nargs=2,
         help="specify the lower and upper boundaries of the global simulation space at the beggining of the simulation in [m]. Default is 0.",
-        default=[(0,-571.5e-6), (108.2e-6,0)])
+        default=[(0, -571.5e-6), (108.2e-6, 0)])
 
     space.add_argument(
         "--if_move",
