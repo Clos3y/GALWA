@@ -271,12 +271,9 @@ if __name__ == "__main__":
 
     laser = parser.add_argument_group(title="laser")
 
-    laser.add_argument(
-        "-I",
-        "--intensity",
-        default=4e18,
-        type=float,
-        help="specify the peak laser intensity in [W * cm^-2]")
+    laser.add_argument("-pE","--pulse_energy",type=float,help="the laser pulse energy, in Joules",default=0.6*0.55)
+
+    laser.add_argument("-pT","--pulse_duration",type=float,help="duration of the laser pulse, in seconds",default=40e-15)
 
     laser.add_argument(
         "--laser_wavelength",
@@ -678,7 +675,7 @@ if __name__ == "__main__":
         file.write("\nzpulse\n{\n")
 
         file.write(
-            f"a0 = { (e/(np.pi * m_e * np.sqrt(2*eps0 * c ** 5 ))) *  np.sqrt(args.intensity * 1e4) * args.laser_wavelength},\n")
+            f"a0 = { e * args.laser_wavelength / ( args.laser_spot_size * m_e) * np.sqrt(2*np.sqrt(np.log(2))*args.pulse_energy / (c**5 * eps0 * args.pulse_duration * np.pi**(7/2) )) },\n")
 
         file.write(
             f"omega0 = {2 * np.pi * c / (args.laser_wavelength * plasma_frequency(args.plasma_density))},\n")
