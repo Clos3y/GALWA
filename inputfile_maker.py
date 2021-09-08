@@ -271,9 +271,19 @@ if __name__ == "__main__":
 
     laser = parser.add_argument_group(title="laser")
 
-    laser.add_argument("-pE","--pulse_energy",type=float,help="the laser pulse energy, in Joules",default=0.6*0.55)
+    laser.add_argument(
+        "-pE",
+        "--pulse_energy",
+        type=float,
+        help="the laser pulse energy, in Joules",
+        default=0.6 * 0.55)
 
-    laser.add_argument("-pT","--pulse_duration",type=float,help="duration of the laser pulse, in seconds",default=40e-15)
+    laser.add_argument(
+        "-pT",
+        "--pulse_duration",
+        type=float,
+        help="duration of the laser pulse, in seconds",
+        default=40e-15)
 
     laser.add_argument(
         "--laser_wavelength",
