@@ -65,7 +65,9 @@ class Individual:
         while not os.path.exists(f"jobscript{number}.pbs"):
             time.sleep(1)
 
-        # These directories need altering depending on your specific usage, the same is true in the jobscript (i.e, your OSIRIS binary will not be in the same absolute path as mine)
+        # These directories need altering depending on your specific usage, the
+        # same is true in the jobscript (i.e, your OSIRIS binary will not be in
+        # the same absolute path as mine)
         os.system(
             f"sed -i 's/-N q3d_no_beam/-N Individual{number}/g' jobscript{number}.pbs")
         os.system(
