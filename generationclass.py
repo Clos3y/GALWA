@@ -254,7 +254,8 @@ class Generation:
                     [
                         random.uniform(
                             *
-                            val) if np.random.random() <= self.mutation_rate else random.choice(genes[i]) for i,
+                            val) if np.random.random() <= self.mutation_rate else random.choice(
+                            genes[i]) for i,
                         val in enumerate(
                             self.changeable_parameters)])  # Creates the new individual by mutation and breeding
 
