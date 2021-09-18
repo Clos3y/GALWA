@@ -230,21 +230,17 @@ class Generation:
         genes = self.parameter_mixing_list
 
         for i in range(len(self.changeable_parameters)):
-            for j in range(int(2 / self.selection_fraction)):
-                genes[i].append(parent1.parameter_list[i])
-                genes[i].append(parent2.parameter_list[i])
-
-        for i in range(len(self.changeable_parameters)):
-            random.shuffle(genes[i])
+            genes[i].append(parent1.parameter_list[i])
+            genes[i].append(parent2.parameter_list[i])
 
         for i in range(int(2 / self.selection_fraction)):
             if self.mutation_method == "perturbative":
                 geneList = [
-                    self.parameter_mixing_list[i].pop() *
+                    random.choice(genes[i]) *
                     random.gauss(
                         1,
                         1 /
-                        3) if np.random.random() <= self.mutation_rate else self.parameter_mixing_list[i].pop() for i in range(
+                        4) for i in range(
                         len(
                             self.changeable_parameters))]
                 geneList = [self.changeable_parameters[i][0] if geneList[i] < self.changeable_parameters[i]
@@ -258,7 +254,7 @@ class Generation:
                     [
                         random.uniform(
                             *
-                            val) if np.random.random() <= self.mutation_rate else self.parameter_mixing_list[i].pop() for i,
+                            val) if np.random.random() <= self.mutation_rate else random.choice(genes[i]) for i,
                         val in enumerate(
                             self.changeable_parameters)])  # Creates the new individual by mutation and breeding
 
